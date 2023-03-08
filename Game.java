@@ -92,47 +92,57 @@ public class Game {
             "woman", "wonder", "wood", "word", "work", "world", "worry", "worse", "worth", "would", "write", "wrong",
             "year", "yes", "yesterday", "yet", "you", "young"};
     WordLibrary words = new WordLibrary(wordsArr);
-    String randomWord = words.getRandomWord();
+
 
     void launchGame() {
+        System.out.println("\nWelcome to the HangMan Game!");
+        menu();
+    }
+
+    void menu(){
+        System.out.println("\t Please select a valid option: \n\t     1: Play | 2: Quit");
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to the HangMan Game! \n Please select an option: \n 1: Play | 2: Quit ");
         String option = scanner.nextLine();
         if (option.equals("2")) {
             System.out.println(stopGame());
-        } else {
+        } else if( option.equals("1")){
             System.out.println("Please enter your name:");
             String name = scanner.nextLine();
             Player player = new Player(name);
-            playGame(player);
+            String randomWord = words.getRandomWord();
+            playGame(player, randomWord);
+        } else {
+            menu();
         }
-
     }
 
-    void playGame(Player player){
+    void playGame(Player player, String randomWord){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Selecting a random word...");
         System.out.println("... ... ... ... ... .... ... ...");
         System.out.println("...Starting the game...");
 
+        System.out.println(player.getName());
+        System.out.println(randomWord);
         String[] guessArr = new String[randomWord.length()];
-
         Arrays.fill(guessArr, "_");
-
         String[] wordCharArr = randomWord.split("");
+
         int chainErrorsCounter = 0;
         int chainSuccessCounter = 0;
 
         while (player.getLives() != 0) {
-            System.out.println("Remaining ❤️ lives: " + player.getLives());
+            System.out.println("Please add a or a word guess (with the correct amount of letters.):");
+
+            System.out.printf("\t%s ❤️ left! \n", player.getLives());
             String guessString = String.join("", guessArr);
-            System.out.println(guessString);
-            System.out.println("Please add a or a word guess(with the correct amount of letters:");
+            System.out.println("\n\t"+guessString);
+
             String input = scanner.nextLine();
 
             if (input.length() == randomWord.length()) {
                 if (input.toUpperCase().equals(randomWord)) {
-                    win(player);
+                    win(player, randomWord);
                     break;
                 } else {
                     player.looseALife(input);
@@ -151,7 +161,7 @@ public class Game {
                         correctWord(wordCharArr, guessArr, input);
                         chainSuccessCounter++;
                         if(Arrays.toString(guessArr).equals(Arrays.toString(wordCharArr))){
-                            win(player);
+                            win(player, randomWord);
                             break;
                         }
                         if(chainSuccessCounter > 2){
@@ -175,11 +185,35 @@ public class Game {
     }
 
 
-    void win(Player player){
-        System.out.printf("🎉 You win 🌟 %s! You had %s ❤ left, the word was %s", player.getName(), player.getLives(), randomWord);
+    void win(Player player, String randomWord){
+        System.out.printf("🎉 You win 🌟 %s! You had %s ❤ left, the word was %s!", player.getName(), player.getLives(), randomWord);
+        System.out.println("\nDo you want to play again?");
+        playAgain(player);
     }
-    void loose(Player player,String word) {
-        System.out.printf("\n You loose %s 😢, the word was %s!", player.getName(), randomWord);
+    void loose(Player player,String randomWord) {
+        System.out.printf("\nYou loose %s 😢, the word was %s!", player.getName(), randomWord);
+        System.out.println("\nDo you want to play again?");
+        playAgain(player);
+    }
+
+
+    void playAgain(Player player){
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Yes/No");
+        String answer = scanner.nextLine();
+
+        if (answer.toUpperCase().contains("Y")){
+            String newRandomWord = words.getRandomWord();
+            player.setLives(8);
+            playGame(player, newRandomWord);
+        } else if (answer.toUpperCase().contains("N")){
+            System.out.println("You have left the game.");
+        } else {
+            System.out.println("Please select a valid option.");
+            playAgain(player);
+        }
+
     }
 
 
@@ -194,7 +228,7 @@ public class Game {
         System.out.println("✅ Correct!");
     }
     String stopGame() {
-        return "You have quit the game.";
+        return "You have quit the game. \n 👋 Bye Bye 👋";
     }
 
 
