@@ -6,4 +6,5 @@ public class Main {
         Game firstGame = new Game();
         firstGame.launchGame();
     }
+
 }
