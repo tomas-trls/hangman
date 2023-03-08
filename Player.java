@@ -1,4 +1,4 @@
-public class Player extends Game{
+public class Player {
     private String name;
     private char input;
 
