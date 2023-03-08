@@ -17,7 +17,7 @@ I broke down the game in 3 Classes:
 ## 🖥️ Demo
 
 <div align="center">
-  ![Demo of the project](http://g.recordit.co/yVyptnjXTn.gif)
+  ![Demo of the project](Hangman.gif)
 </div>
 
 ## 🛠️ Installation 
