@@ -122,8 +122,6 @@ public class Game {
         System.out.println("... ... ... ... ... .... ... ...");
         System.out.println("...Starting the game...");
 
-        System.out.println(player.getName());
-        System.out.println(randomWord);
         String[] guessArr = new String[randomWord.length()];
         Arrays.fill(guessArr, "_");
         String[] wordCharArr = randomWord.split("");
@@ -208,7 +206,7 @@ public class Game {
             player.setLives(8);
             playGame(player, newRandomWord);
         } else if (answer.toUpperCase().contains("N")){
-            System.out.println("You have left the game.");
+            System.out.println(stopGame());
         } else {
             System.out.println("Please select a valid option.");
             playAgain(player);
