@@ -2,7 +2,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 public class Game {
 
-
     void launchGame() {
         System.out.println("\nWelcome to the HangMan Game!");
         menu();
@@ -28,7 +27,7 @@ public class Game {
     void playGame(Player player, String randomWord){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Selecting a random word...");
-        System.out.println("... ... ... ... ... .... ... ...");
+        System.out.println("... ... ... ... ... ... ");
         System.out.println("...Starting the game...");
 
         String[] guessArr = new String[randomWord.length()];
@@ -91,7 +90,6 @@ public class Game {
         }
     }
 
-
     void win(Player player, String randomWord){
         System.out.printf("🎉 You win 🌟 %s! You had %s ❤ left, the word was %s!", player.getName(), player.getLives(), randomWord);
         System.out.println("\nDo you want to play again?");
@@ -102,7 +100,6 @@ public class Game {
         System.out.println("\nDo you want to play again?");
         playAgain(player);
     }
-
 
     void playAgain(Player player){
         Scanner scanner = new Scanner(System.in);

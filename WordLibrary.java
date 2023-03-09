@@ -1,6 +1,6 @@
 public class WordLibrary {
 
-    static String[] wordsArr = {"france", "elephant", "giraffe", "Nology", "Spain", "Marseille", "Javascript", "able",
+    static String[] wordsArr = {"france", "elephant", "giraffe", "nology", "Spain", "Marseille", "Javascript", "able",
             "about", "absolute", "accept", "account", "achieve", "across", "act", "active", "actual", "add", "address",
             "admit", "advertise", "affect", "afford", "after", "afternoon", "again", "against", "age", "agent", "ago",
             "agree", "air", "all", "allow", "almost", "along", "already", "alright", "also", "although", "always",
@@ -89,10 +89,14 @@ public class WordLibrary {
             "woman", "wonder", "wood", "word", "work", "world", "worry", "worse", "worth", "would", "write", "wrong",
             "year", "yes", "yesterday", "yet", "you", "young"};
 
-
+    static int count = 0;
     static String getRandomWord(){
         int randomIndex = (int) (Math.random() * wordsArr.length);
-        return wordsArr[randomIndex].toUpperCase();
+        if(wordsArr[randomIndex].toUpperCase().length() < 5) {
+            return getRandomWord();
+        } else {
+            return wordsArr[randomIndex].toUpperCase();
+        }
     }
 
 
