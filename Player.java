@@ -1,13 +1,21 @@
 public class Player {
+
+    private int id;
+    private static int nextId = 0;
     private String name;
     private char input;
-
+    private int score = 0;
     private int lives = 8;
+
 
     public Player(String name) {
         this.name = name;
+        this.id = generateId();
     }
 
+    public int getId() {
+        return id;
+    }
     public String getName() {
         return name;
     }
@@ -31,6 +39,20 @@ public class Player {
     public void setLives(int lives) {
         this.lives = lives;
     }
+
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int generateId(){
+        return nextId++;
+    }
+
 
     public void looseALife (String input){
         switch (this.getLives()) {

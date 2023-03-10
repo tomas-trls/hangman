@@ -1,30 +1,99 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class Game {
 
     void launchGame() {
-        System.out.println("\nWelcome to the HangMan Game!");
-        menu();
+        System.out.println("\n📖Welcome to the HangMan Game 🦥🐒!");
+        menu(new Player("not a player"));
     }
 
-    void menu(){
-        System.out.println("\t Please select a valid option: \n\t     1: Play | 2: Quit");
-        Scanner scanner = new Scanner(System.in);
-        String option = scanner.nextLine();
-        if (option.equals("2")) {
-            System.out.println(stopGame());
-        } else if( option.equals("1")){
-            System.out.println("Please enter your name:");
-            String name = scanner.nextLine();
-            Player player = new Player(name);
-            String randomWord = WordLibrary.getRandomWord();
-            playGame(player, randomWord);
+    ArrayList<Player> playersArr = new ArrayList<>();
+
+    void menu(Player player) {
+        if (player.getName().equals("not a player")) {
+            System.out.println("  Please select a valid option: \n1: New Game | 2: Scores | 3: Quit");
+            Scanner scanner = new Scanner(System.in);
+            String option = scanner.nextLine();
+            if (option.equals("3")) {
+                stopGame();
+            } else if (option.equals("1")) {
+                System.out.println("Please enter your name:");
+                String name = scanner.nextLine();
+                player = new Player(name);
+                playersArr.add(player);
+                String randomWord = WordLibrary.getRandomWord();
+                playGame(player, randomWord);
+            } else if (option.equals("2")) {
+                System.out.println("\t\tScores");
+                System.out.println("\tNo Players ----");
+                menu(player);
+            } else {
+                menu(player);
+            }
         } else {
-            menu();
+            System.out.println("CURRENT PLAYER: " + player.getName());
+            System.out.println("\t     Please select a valid option: \n1: New Game 2: Continue | 3: Scores | 4: Quit");
+            Scanner scanner = new Scanner(System.in);
+            String option = scanner.nextLine();
+            if (option.equals("4")) {
+                stopGame();
+            } else if (option.equals("1")) {
+                System.out.println("Please enter your name:");
+                String name = scanner.nextLine();
+                String randomWord = WordLibrary.getRandomWord();
+                for (Player playerObject : playersArr) {
+                    if (!playerObject.getName().equalsIgnoreCase(name)) {
+                        player = new Player(name);
+                        playersArr.add(player);
+                        playGame(player, randomWord);
+                    }
+                    System.out.println("😓 This name is taken! 🐱‍👤");
+                    menu(player);
+                }
+            } else if (option.equals("2")) {
+                System.out.println("Do you want to continue with an old player profile or on this profile?");
+                System.out.println("1: Old Player | 2: Current Player | 3: Back");
+                String choice = scanner.nextLine();
+                if (choice.equals("1")) {
+                    System.out.println("Select a Player:");
+                    for (Player playerObject : playersArr) {
+                        System.out.println(playerObject.getId() + ". " + playerObject.getName() + " ---- " + playerObject.getScore() + " points.");
+                    }
+                    int playerChosen = scanner.nextInt();
+                    String randomWord = WordLibrary.getRandomWord();
+                    player = playersArr.stream().filter(playerObject -> playerObject.getId() == playerChosen).findFirst().get();
+                    player.setLives(8);
+                    playGame(player, randomWord);
+                } else if (choice.equals("2")) {
+                    String randomWord = WordLibrary.getRandomWord();
+                    player.setLives(8);
+                    playGame(player, randomWord);
+                } else if (choice.equals("3")) {
+                    menu(player);
+                } else {
+                    System.out.println("Please select a valid option");
+                }
+            } else if (option.equals("3")) {
+                System.out.println("\t\tScores");
+                List<Player> sortedPlayers = playersArr.stream().sorted(Comparator.comparing(Player::getScore).reversed()).collect(Collectors.toList());
+                for (Player playerObject : sortedPlayers) {
+                    System.out.println("- " + playerObject.getName() + " ---- " + playerObject.getScore() + " points.");
+                }
+                System.out.println("1. Back");
+                String back = scanner.nextLine();
+                if (back.equals("1")) {
+                    menu(player);
+                }
+            } else {
+                menu(player);
+            }
         }
     }
 
-    void playGame(Player player, String randomWord){
+
+    void playGame(Player player, String randomWord) {
+        System.out.println("CURRENT PLAYER: " + player.getName());
         Scanner scanner = new Scanner(System.in);
         System.out.println("Selecting a random word...");
         System.out.println("... ... ... ... ... ... ");
@@ -33,7 +102,7 @@ public class Game {
         String[] guessArr = new String[randomWord.length()];
         Arrays.fill(guessArr, "_");
         String[] wordCharArr = randomWord.split("");
-
+        Set<String> inputSet = new HashSet<>();
         int chainErrorsCounter = 0;
         int chainSuccessCounter = 0;
 
@@ -41,8 +110,11 @@ public class Game {
             System.out.println("Please add a or a word guess (with the correct amount of letters.):");
 
             System.out.printf("\t%s ❤️ left! \n", player.getLives());
+            if (!inputSet.isEmpty()) {
+                System.out.println("Letters guessed: " + String.join(",", inputSet));
+            }
             String guessString = String.join("", guessArr);
-            System.out.println("\n\t"+guessString);
+            System.out.println("\n\t" + guessString);
 
             String input = scanner.nextLine();
 
@@ -51,35 +123,44 @@ public class Game {
                     win(player, randomWord);
                     break;
                 } else {
-                    player.looseALife(input);
+                    System.out.println("🤣 You guess the wrong word and you loose the game. 🤣");
+                    player.setLives(0);
                 }
             } else if (input.length() > 1 || input.equals("")) {
                 chainErrorsCounter++;
-                System.out.println("Please enter only one letter or guess a word with the exact same number of letters.");
+                System.out.println("🐱‍🚀 Please enter only one letter or guess a word with the exact same number of letters. 🤗");
             } else if (input.matches("[0-9]")) {
                 chainErrorsCounter++;
-                System.out.println("Words are not made with numbers");
+                System.out.println("🤓 Words are not made with numbers! ");
             } else {
                 if (randomWord.contains(input.toUpperCase())) {
-                    if (Arrays.toString(guessArr).contains(input.toUpperCase())){
-                        System.out.println("You already wrote this letter!");
+                    if (Arrays.toString(guessArr).contains(input.toUpperCase())) {
+                        wrongLetter();
+                        chainErrorsCounter++;
+                        inputSet.add(input.toUpperCase());
                     } else {
                         correctWord(wordCharArr, guessArr, input);
                         chainSuccessCounter++;
-                        if(Arrays.toString(guessArr).equals(Arrays.toString(wordCharArr))){
+                        if (Arrays.toString(guessArr).equals(Arrays.toString(wordCharArr))) {
                             win(player, randomWord);
                             break;
                         }
-                        if(chainSuccessCounter > 2){
+                        if (chainSuccessCounter > 2) {
                             System.out.println("🔥 YOU ARE ON FIREEE! 🔥");
                         }
                     }
                 } else {
-                    chainSuccessCounter = 0;
-                    player.looseALife(input);
+                    if (inputSet.contains(input.toUpperCase())) {
+                        wrongLetter();
+                        chainErrorsCounter++;
+                    } else {
+                        inputSet.add(input.toUpperCase());
+                        chainSuccessCounter = 0;
+                        player.looseALife(input);
+                    }
                 }
             }
-            if (chainErrorsCounter > 2){
+            if (chainErrorsCounter > 2) {
                 System.out.println("❌⚡ Please try to focus... You loose a life to remind yourself that sometimes it's better to think than just spam. ⚡❌");
                 player.looseALife(input);
                 chainErrorsCounter = 0;
@@ -90,29 +171,33 @@ public class Game {
         }
     }
 
-    void win(Player player, String randomWord){
+    void win(Player player, String randomWord) {
         System.out.printf("🎉 You win 🌟 %s! You had %s ❤ left, the word was %s!", player.getName(), player.getLives(), randomWord);
-        System.out.println("\nDo you want to play again?");
-        playAgain(player);
-    }
-    void loose(Player player,String randomWord) {
-        System.out.printf("\nYou loose %s 😢, the word was %s!", player.getName(), randomWord);
+        player.setScore(player.getScore() + 100);
+        System.out.printf("\nYour score is %s", player.getScore());
         System.out.println("\nDo you want to play again?");
         playAgain(player);
     }
 
-    void playAgain(Player player){
+    void loose(Player player, String randomWord) {
+        System.out.printf("\nYou loose %s 😢, the word was %s!", player.getName(), randomWord);
+        System.out.printf("\nYour score was %s", player.getScore());
+        System.out.println("\nDo you want to play again?");
+        playAgain(player);
+    }
+
+    void playAgain(Player player) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Yes/No");
         String answer = scanner.nextLine();
 
-        if (answer.toUpperCase().contains("Y")){
+        if (answer.toUpperCase().contains("Y")) {
             String newRandomWord = WordLibrary.getRandomWord();
             player.setLives(8);
             playGame(player, newRandomWord);
-        } else if (answer.toUpperCase().contains("N")){
-            System.out.println(stopGame());
+        } else if (answer.toUpperCase().contains("N")) {
+            menu(player);
         } else {
             System.out.println("Please select a valid option.");
             playAgain(player);
@@ -121,7 +206,7 @@ public class Game {
     }
 
 
-     void correctWord(String[] wordArr, String[] guessArr, String input){
+    void correctWord(String[] wordArr, String[] guessArr, String input) {
         int index = 0;
         for (int i = 0; i < wordArr.length; i++) {
             if (input.toUpperCase().contains(wordArr[i])) {
@@ -131,8 +216,13 @@ public class Game {
         }
         System.out.println("✅ Correct!");
     }
-    String stopGame() {
-        return "You have quit the game. \n 👋 Bye Bye 👋";
+
+    void wrongLetter() {
+        System.out.println("😡 You already wrote this letter! 😡");
+    }
+
+    void stopGame() {
+        System.out.println("You have quit the game. \n 👋 Bye Bye 👋");
     }
 
 }
