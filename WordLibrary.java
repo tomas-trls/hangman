@@ -1,6 +1,6 @@
 public class WordLibrary {
 
-    static String[] wordsArr = {"france", "elephant", "giraffe", "nology", "Spain", "Marseille", "Javascript", "able",
+    final static String[] wordsArr = {"france", "elephant", "giraffe", "nology", "Spain", "Marseille", "Javascript", "able",
             "about", "absolute", "accept", "account", "achieve", "across", "act", "active", "actual", "add", "address",
             "admit", "advertise", "affect", "afford", "after", "afternoon", "again", "against", "age", "agent", "ago",
             "agree", "air", "all", "allow", "almost", "along", "already", "alright", "also", "although", "always",
