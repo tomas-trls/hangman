@@ -12,6 +12,11 @@ I broke down the game in 3 Classes:
 - Option to Play or leave the game.
 - Options to relaunch a new game without creating a new user profile.
 - Chain Erros and Chain Succes counter that will punish or congratulate the player.
+- Create a new Player
+- Display the scores of each Player.
+- Display the letters guessed
+- Protection with writing the same input twice
+- Different player profiles that can be accessed to continue adding points.
 - Emojis 🎉
 
 

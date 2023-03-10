@@ -24,7 +24,8 @@ I broke down the game in 3 Classes:
 
 <div align="center">
 
-  ![Demo of the project](Hangman.gif)
+  ![Demo of the project](http://g.recordit.co/nd83Ss8utY.gif)
+
 </div>
 
 ## 🛠️ Installation 

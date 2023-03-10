@@ -1,3 +1,5 @@
+import org.w3c.dom.ls.LSOutput;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,9 +17,7 @@ public class Game {
             System.out.println("  Please select a valid option: \n1: New Game | 2: Scores | 3: Quit");
             Scanner scanner = new Scanner(System.in);
             String option = scanner.nextLine();
-            if (option.equals("3")) {
-                stopGame();
-            } else if (option.equals("1")) {
+            if (option.equals("1")) {
                 System.out.println("Please enter your name:");
                 String name = scanner.nextLine();
                 player = new Player(name);
@@ -28,6 +28,8 @@ public class Game {
                 System.out.println("\t\tScores");
                 System.out.println("\tNo Players ----");
                 menu(player);
+            } else if (option.equals("3")) {
+                stopGame();
             } else {
                 menu(player);
             }
@@ -36,21 +38,27 @@ public class Game {
             System.out.println("\t     Please select a valid option: \n1: New Game 2: Continue | 3: Scores | 4: Quit");
             Scanner scanner = new Scanner(System.in);
             String option = scanner.nextLine();
-            if (option.equals("4")) {
-                stopGame();
-            } else if (option.equals("1")) {
+            if (option.equals("1")) {
                 System.out.println("Please enter your name:");
                 String name = scanner.nextLine();
                 String randomWord = WordLibrary.getRandomWord();
+                boolean nameTaken = false;
+
                 for (Player playerObject : playersArr) {
-                    if (!playerObject.getName().equalsIgnoreCase(name)) {
-                        player = new Player(name);
-                        playersArr.add(player);
-                        playGame(player, randomWord);
+                    if (playerObject.getName().equalsIgnoreCase(name)) {
+                        System.out.println("😓 This name is taken! 🙈");
+                        menu(playerObject);
+                        nameTaken = true;
+                        break;
                     }
-                    System.out.println("😓 This name is taken! 🐱‍👤");
-                    menu(player);
                 }
+                if (!nameTaken) {
+                    Player playerObject = new Player(name);
+                    System.out.println(playerObject.getName());
+                    playersArr.add(playerObject);
+                    playGame(playerObject, randomWord);
+                }
+
             } else if (option.equals("2")) {
                 System.out.println("Do you want to continue with an old player profile or on this profile?");
                 System.out.println("1: Old Player | 2: Current Player | 3: Back");
@@ -85,6 +93,9 @@ public class Game {
                 if (back.equals("1")) {
                     menu(player);
                 }
+            } else if (option.equals("4")) {
+                playersArr.clear();
+                stopGame();
             } else {
                 menu(player);
             }
@@ -141,6 +152,7 @@ public class Game {
                     } else {
                         correctWord(wordCharArr, guessArr, input);
                         chainSuccessCounter++;
+                        inputSet.add(input.toUpperCase());
                         if (Arrays.toString(guessArr).equals(Arrays.toString(wordCharArr))) {
                             win(player, randomWord);
                             break;
